@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Services\DatabaseService;
 use Illuminate\Support\ServiceProvider;
 
 class DatabaseServiceProvider extends ServiceProvider

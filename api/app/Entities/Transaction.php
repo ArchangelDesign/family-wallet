@@ -54,6 +54,18 @@ class Transaction
     protected $memo;
 
     /**
+     * @var double
+     * @Column(type="decimal", nullable=true)
+     */
+    protected $balance;
+
+    /**
+     * @var string
+     * @Column(type="string", length=120)
+     */
+    protected $transactionId;
+
+    /**
      * @var Account
      * @ManyToOne(targetEntity="App\Entities\Account")
      * @JoinColumn(name="account_id", referencedColumnName="id")
@@ -183,6 +195,60 @@ class Transaction
     public function setMemo(string $memo): Transaction
     {
         $this->memo = $memo;
+        return $this;
+    }
+
+    /**
+     * @return float
+     */
+    public function getBalance(): ?float
+    {
+        return $this->balance;
+    }
+
+    /**
+     * @param float $balance
+     * @return Transaction
+     */
+    public function setBalance(?float $balance): Transaction
+    {
+        $this->balance = $balance;
+        return $this;
+    }
+
+    /**
+     * @return Account
+     */
+    public function getAccount(): Account
+    {
+        return $this->account;
+    }
+
+    /**
+     * @param Account $account
+     * @return Transaction
+     */
+    public function setAccount(Account $account): Transaction
+    {
+        $this->account = $account;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTransactionId(): string
+    {
+        return $this->transactionId;
+    }
+
+    /**
+     * @param string $transactionId
+     * @return Transaction
+     */
+    public function setTransactionId(string $transactionId): Transaction
+    {
+        $this->transactionId = $transactionId;
         return $this;
     }
 }

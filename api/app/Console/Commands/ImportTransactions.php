@@ -70,8 +70,10 @@ class ImportTransactions extends Command
             return 0;
 
         foreach ($transactions as $transaction) {
-            $transactionService->registerTransaction($account, $transaction);
+            $transactionService->registerTransaction($account, $transaction, false);
         }
+
+        $transactionService->flush();
 
         $this->output->success('Transactions imported.');
         return 0;

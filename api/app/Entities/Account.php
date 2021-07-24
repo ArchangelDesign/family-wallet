@@ -22,4 +22,40 @@ class Account
      * @Column(type="string")
      */
     protected $name;
+
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int $id
+     * @return Account
+     */
+    public function setId(int $id): Account
+    {
+        $this->id = $id;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     * @return Account
+     */
+    public function setName(string $name): Account
+    {
+        $this->name = $name;
+        return $this;
+    }
 }

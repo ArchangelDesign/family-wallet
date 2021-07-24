@@ -3,7 +3,11 @@
 namespace App\Services;
 use App\Entities\Account;
 use App\Entities\Transaction;
+use App\Exceptions\AccountNotFound;
+use App\Exceptions\TransactionServicePanic;
 use App\Exceptions\UnhandledTransactionFileFormat;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 
 /**
  * Class TransactionService
@@ -42,9 +46,16 @@ class TransactionService
         }
     }
 
-    public function registerTransaction(Account $account, Transaction $transaction)
+    public function registerTransaction(Account $account, Transaction $transaction, $flush = true)
     {
-
+        if (empty($account->getId())) {
+            throw new AccountNotFound();
+        }
+        if (!$this->db->contains($account)) {
+            throw new AccountNotFound('Entity is not synchronized with Entity Manager');
+        }
+        $transaction->setAccount($account);
+        $this->db->persist($transaction, $flush);
     }
 
     public function fetchAccountByIdOrName($accountIdOrName): Account
@@ -55,13 +66,36 @@ class TransactionService
         return $this->fetchAccountByName($accountIdOrName);
     }
 
+    /**
+     * @param int $accountId
+     * @return Account
+     * @throws AccountNotFound
+     * @throws TransactionServicePanic
+     */
     private function fetchAccountById(int $accountId): Account
+    {
+        try {
+            return $this->db->getEntityManager()->createQueryBuilder()
+                ->select('a')
+                ->from('App\Entities\Account', 'a')
+                ->where('a.id = :id')
+                ->setParameter('id', $accountId)
+                ->getQuery()
+                ->getSingleResult();
+        } catch (NoResultException $e) {
+            throw new AccountNotFound('id: ' . $accountId);
+        } catch (NonUniqueResultException $e) {
+            throw new TransactionServicePanic('More than one account found for id ' . $accountId);
+        }
+    }
+
+    private function fetchAccountByName($accountName): Account
     {
         return new Account();
     }
 
-    private function fetchAccountByName($accountIdOrName): Account
+    public function flush()
     {
-        return new Account();
+        $this->db->flush();
     }
 }

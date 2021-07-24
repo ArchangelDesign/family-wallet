@@ -48,8 +48,8 @@ class Transaction
     protected $name;
 
     /**
-     * @var string
-     * @Column(type="string", length=200)
+     * @var string|null
+     * @Column(type="string", length=200, nullable=true)
      */
     protected $memo;
 
@@ -183,7 +183,7 @@ class Transaction
     /**
      * @return string
      */
-    public function getMemo(): string
+    public function getMemo(): ?string
     {
         return $this->memo;
     }
@@ -192,7 +192,7 @@ class Transaction
      * @param string $memo
      * @return Transaction
      */
-    public function setMemo(string $memo): Transaction
+    public function setMemo(?string $memo): Transaction
     {
         $this->memo = $memo;
         return $this;

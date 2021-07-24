@@ -20,9 +20,9 @@ use App\Exceptions\FileParsingError;
  */
 class QfxTransactionFileParser implements TransactionFileParserInterface
 {
-    const PATTERN_TRANSACTIONS_OUTER_BLOCK = '/<BANKTRANLIST>[.\s\w<>\[\]\/:]*<\/BANKTRANLIST>/';
-    const PATTERN_LEDGER_BALANCE_OUTER_BLOCK = '/<LEDGERBAL>[.\s\w<>\[\]\/:]*<\/LEDGERBAL>/';
-    const PATTERN_TRANSACTION = '/<STMTTRN>[.\w\s<>]*<\/STMTTRN>/';
+    const PATTERN_TRANSACTIONS_OUTER_BLOCK = '/<BANKTRANLIST>[.\s\w<>\[\]\/:,\-#]*<\/BANKTRANLIST>/';
+    const PATTERN_LEDGER_BALANCE_OUTER_BLOCK = '/<LEDGERBAL>[.\s\w<>\[\]\/:,]*<\/LEDGERBAL>/';
+    const PATTERN_TRANSACTION = '/<STMTTRN>[.\w\s<>,:-]*<\/STMTTRN>/';
     private $filePath;
 
     private $contents;
@@ -51,6 +51,7 @@ class QfxTransactionFileParser implements TransactionFileParserInterface
         $this->transactions = [];
         // @TODO: support large file
         $this->contents = file_get_contents($filePath);
+        $this->contents = str_replace("\r\n", "\n", $this->contents);
         $transactionOuterBlock = $this->parseTransactionOuterBlock();
         $transactionBlocks = $this->parseTransactionBlocks($transactionOuterBlock);
         foreach ($transactionBlocks as $block) {
@@ -69,7 +70,7 @@ class QfxTransactionFileParser implements TransactionFileParserInterface
     {
         $matches = [];
         if (!preg_match(self::PATTERN_TRANSACTIONS_OUTER_BLOCK, $this->contents, $matches)) {
-            throw new FileParsingError();
+            throw new FileParsingError('Cannot find BANKTRANLIST node in the file.');
         }
 
         return $matches[0];
@@ -82,7 +83,7 @@ class QfxTransactionFileParser implements TransactionFileParserInterface
     {
         $matches = [];
         if (!preg_match(self::PATTERN_LEDGER_BALANCE_OUTER_BLOCK, $this->contents, $matches)) {
-            throw new FileParsingError();
+            throw new FileParsingError('Cannot find ledger balance block in the file');
         }
 
         return $matches[0];
@@ -116,9 +117,9 @@ class QfxTransactionFileParser implements TransactionFileParserInterface
     private function parseTransactionBlocks(string $transactionOuterBlock): array
     {
         $matches = [];
-        preg_match(self::PATTERN_TRANSACTION, $transactionOuterBlock, $matches);
+        preg_match_all(self::PATTERN_TRANSACTION, $transactionOuterBlock, $matches);
 
-        return $matches;
+        return $matches[0];
     }
 
     /**
@@ -184,7 +185,7 @@ class QfxTransactionFileParser implements TransactionFileParserInterface
         if (!preg_match($pattern, $block, $matches)) {
             throw new FileParsingError('cannot parse transaction amount');
         }
-        return trim(str_replace(['<TRNAMT>', "\n"], '', $matches[0]));
+        return (float)trim(str_replace(['<TRNAMT>', "\n"], '', $matches[0]));
     }
 
     /**

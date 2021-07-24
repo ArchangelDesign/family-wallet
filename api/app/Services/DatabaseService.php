@@ -15,7 +15,7 @@ class DatabaseService
     /**
      * @var EntityManager
      */
-    private EntityManager $entityManager;
+    private $entityManager;
 
     public function __construct(
         string $host,
@@ -47,5 +47,23 @@ class DatabaseService
     public function getEntityManager(): EntityManager
     {
         return $this->entityManager;
+    }
+
+    public function flush()
+    {
+        $this->entityManager->flush();
+    }
+
+    public function persist($entity, bool $flush)
+    {
+        $this->entityManager->persist($entity);
+        if ($flush) {
+            $this->flush();
+        }
+    }
+
+    public function contains($entity)
+    {
+        return $this->entityManager->contains($entity);
     }
 }

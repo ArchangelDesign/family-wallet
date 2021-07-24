@@ -30,7 +30,7 @@ class Transaction
     protected $datePosted;
 
     /**
-     * @var double
+     * @var float
      * @Column(type="decimal", precision=8, scale=3)
      */
     protected $amount;

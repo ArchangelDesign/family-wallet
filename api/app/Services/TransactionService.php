@@ -129,10 +129,12 @@ class TransactionService
                 ->andWhere('t.name = :tName')
                 ->andWhere('t.amount = :amount')
                 ->andWhere('t.datePosted = :datePosted')
+                ->andWhere('t.type = :type')
                 ->setParameter('id', $transaction->getTransactionId())
                 ->setParameter('tName', $transaction->getName())
                 ->setParameter('amount', $transaction->getAmount())
                 ->setParameter('datePosted', $transaction->getDatePosted())
+                ->setParameter('type', $transaction->getType())
                 ->getQuery()
                 ->getSingleResult();
         } catch (NoResultException $e) {

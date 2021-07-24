@@ -20,9 +20,9 @@ use App\Exceptions\FileParsingError;
  */
 class QfxTransactionFileParser implements TransactionFileParserInterface
 {
-    const PATTERN_TRANSACTIONS_OUTER_BLOCK = '/<BANKTRANLIST>[.\s\w<>\[\]\/:,\-#]*<\/BANKTRANLIST>/';
+    const PATTERN_TRANSACTIONS_OUTER_BLOCK = '/<BANKTRANLIST>[.\s\w<>\[\]\/:,\-#\$]*<\/BANKTRANLIST>/';
     const PATTERN_LEDGER_BALANCE_OUTER_BLOCK = '/<LEDGERBAL>[.\s\w<>\[\]\/:,]*<\/LEDGERBAL>/';
-    const PATTERN_TRANSACTION = '/<STMTTRN>[.\w\s<>,:\-]*<\/STMTTRN>/';
+    const PATTERN_TRANSACTION = '/<STMTTRN>[.\w\s<>,:\-\$]*<\/STMTTRN>/';
     private $filePath;
 
     private $contents;

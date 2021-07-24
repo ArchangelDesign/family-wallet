@@ -70,10 +70,11 @@ class ImportTransactions extends Command
 
         if (!$this->output->confirm('Import transactions?'))
             return 0;
-
+        $imported = 0;
         foreach ($transactions as $transaction) {
             try {
-                $transactionService->registerTransaction($account, $transaction, false);
+                $transactionService->registerTransaction($account, $transaction, true);
+                $imported++;
             } catch (AccountNotFound $e) {
                 $this->error('Invalid account.');
                 return 128;
@@ -81,10 +82,10 @@ class ImportTransactions extends Command
                 $this->warn('DUPLICATE: ' . $transaction);
             }
         }
+        // we are flushing after each insert to filter out duplicates
+        //$transactionService->flush();
 
-        $transactionService->flush();
-
-        $this->output->success('Transactions imported.');
+        $this->output->success($imported . ' transactions imported.');
         return 0;
     }
 

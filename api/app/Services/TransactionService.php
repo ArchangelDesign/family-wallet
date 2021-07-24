@@ -5,6 +5,7 @@ use App\Entities\Account;
 use App\Entities\Transaction;
 use App\Exceptions\AccountNotFound;
 use App\Exceptions\TransactionDuplicated;
+use App\Exceptions\TransactionDuplicateFound;
 use App\Exceptions\TransactionNotFound;
 use App\Exceptions\TransactionServicePanic;
 use App\Exceptions\UnhandledTransactionFileFormat;
@@ -64,9 +65,9 @@ class TransactionService
             throw new AccountNotFound('Entity is not synchronized with Entity Manager');
         }
         try {
-            $this->fetchTransactionByTransactionId($transaction->getTransactionId(), $account);
+            $this->fetchTransactionByValues($transaction);
             throw new TransactionDuplicated($transaction->getTransactionId());
-        } catch (TransactionNotFound $e) {}
+        } catch (TransactionNotFound | TransactionDuplicateFound $e) {}
         $transaction->setAccount($account);
         $this->db->persist($transaction, $flush);
     }
@@ -113,25 +114,31 @@ class TransactionService
     }
 
     /**
-     * @param string $transactionId
-     * @param Account $account
+     * @param Transaction $transaction
      * @return Transaction
      * @throws TransactionNotFound
+     * @throws TransactionDuplicateFound
      */
-    private function fetchTransactionByTransactionId(string $transactionId, Account $account): Transaction
+    private function fetchTransactionByValues(Transaction $transaction): Transaction
     {
         try {
             return $this->db->getEntityManager()->createQueryBuilder()
                 ->select('t')
                 ->from('App\Entities\Transaction', 't')
                 ->where('t.transactionId = :id')
-                ->andWhere('t.account = :accId')
-                ->setParameter('id', $transactionId)
-                ->setParameter('accId', $account)
+                ->andWhere('t.name = :tName')
+                ->andWhere('t.amount = :amount')
+                ->andWhere('t.datePosted = :datePosted')
+                ->setParameter('id', $transaction->getTransactionId())
+                ->setParameter('tName', $transaction->getName())
+                ->setParameter('amount', $transaction->getAmount())
+                ->setParameter('datePosted', $transaction->getDatePosted())
                 ->getQuery()
                 ->getSingleResult();
         } catch (NoResultException $e) {
-            throw new TransactionNotFound($transactionId);
+            throw new TransactionNotFound($transaction);
+        } catch (NonUniqueResultException $e) {
+            throw new TransactionDuplicateFound($transaction->toString());
         }
     }
 

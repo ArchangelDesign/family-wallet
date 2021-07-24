@@ -22,7 +22,7 @@ class QfxTransactionFileParser implements TransactionFileParserInterface
 {
     const PATTERN_TRANSACTIONS_OUTER_BLOCK = '/<BANKTRANLIST>[.\s\w<>\[\]\/:,\-#]*<\/BANKTRANLIST>/';
     const PATTERN_LEDGER_BALANCE_OUTER_BLOCK = '/<LEDGERBAL>[.\s\w<>\[\]\/:,]*<\/LEDGERBAL>/';
-    const PATTERN_TRANSACTION = '/<STMTTRN>[.\w\s<>,:-]*<\/STMTTRN>/';
+    const PATTERN_TRANSACTION = '/<STMTTRN>[.\w\s<>,:\-]*<\/STMTTRN>/';
     private $filePath;
 
     private $contents;
@@ -196,7 +196,7 @@ class QfxTransactionFileParser implements TransactionFileParserInterface
      */
     private function parseTransactionId(string $block): string
     {
-        $pattern = '/<FITID>[\s\b\w\.]*/';
+        $pattern = '/<FITID>[\s\b\w\.\-]*/';
         $matches = [];
         if (!preg_match($pattern, $block, $matches)) {
             throw new FileParsingError('cannot parse transaction ID');

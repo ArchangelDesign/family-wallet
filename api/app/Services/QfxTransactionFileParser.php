@@ -180,7 +180,7 @@ class QfxTransactionFileParser implements TransactionFileParserInterface
      */
     private function parseTransactionAmount(string $block): float
     {
-        $pattern = '/<TRNAMT>[\s\b\w]*/';
+        $pattern = '/<TRNAMT>-?[\s\b\w]*/';
         $matches = [];
         if (!preg_match($pattern, $block, $matches)) {
             throw new FileParsingError('cannot parse transaction amount');

@@ -251,4 +251,16 @@ class Transaction
         $this->transactionId = $transactionId;
         return $this;
     }
+
+    public function toString()
+    {
+        return "{$this->transactionId} | {$this->name} | {$this->amount} | {$this->type}";
+    }
+
+    public function __toString()
+    {
+        return $this->toString();
+    }
+
+
 }

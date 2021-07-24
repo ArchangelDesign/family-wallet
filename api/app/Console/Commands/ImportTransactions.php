@@ -3,7 +3,9 @@
 namespace App\Console\Commands;
 
 use App\Entities\Transaction;
+use App\Exceptions\AccountNotFound;
 use App\Exceptions\FileNotFound;
+use App\Exceptions\TransactionDuplicated;
 use App\Exceptions\UnhandledTransactionFileFormat;
 use App\Services\TransactionService;
 use Illuminate\Console\Command;
@@ -70,7 +72,14 @@ class ImportTransactions extends Command
             return 0;
 
         foreach ($transactions as $transaction) {
-            $transactionService->registerTransaction($account, $transaction, false);
+            try {
+                $transactionService->registerTransaction($account, $transaction, false);
+            } catch (AccountNotFound $e) {
+                $this->error('Invalid account.');
+                return 128;
+            } catch (TransactionDuplicated $e) {
+                $this->warn('DUPLICATE: ' . $transaction);
+            }
         }
 
         $transactionService->flush();

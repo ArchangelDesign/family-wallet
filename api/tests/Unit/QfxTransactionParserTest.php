@@ -28,4 +28,13 @@ class QfxTransactionParserTest extends TestCase
         $this->assertEquals('2021-07-23 14:42:32', $parser->getLedgerBalance()->getDateOf()->format('Y-m-d H:i:s'));
         $this->assertEquals('2021-07-22 16:00:00', $transaction->getDatePosted()->format('Y-m-d H:i:s'));
     }
+
+    public function testDateTimeConversion()
+    {
+        $qfxDate = '20210723235959.000[0:GMT]';
+        /** @var QfxTransactionFileParser $parser */
+        $parser = $this->app->make(QfxTransactionFileParser::class);
+        $d = $parser->qfxDateToDateTime($qfxDate);
+        $this->assertEquals('2021-07-23 23:59:59', $d->format('Y-m-d H:i:s'));
+    }
 }

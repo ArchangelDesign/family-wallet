@@ -213,7 +213,7 @@ class QfxTransactionFileParser implements TransactionFileParserInterface
         return $this->qfxDateToDateTime(trim(str_replace(['<DTPOSTED>', "\n"], '', $matches[0])));
     }
 
-    private function qfxDateToDateTime(string $qfxDate): \DateTime
+    public function qfxDateToDateTime(string $qfxDate): \DateTime
     {
         $year = substr($qfxDate, 0, 4);
         $month = substr($qfxDate, 4, 2);

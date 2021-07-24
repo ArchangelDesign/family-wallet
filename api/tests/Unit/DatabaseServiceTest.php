@@ -10,6 +10,8 @@ class DatabaseServiceTest extends TestCase
 {
     public function testConnectionWithLocalTestInstance()
     {
+        $this->markTestSkipped('database write connection test.');
+        return;
         $db = new DatabaseService(
             '127.0.0.1',
             'local_test',

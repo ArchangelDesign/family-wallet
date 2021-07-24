@@ -31,7 +31,7 @@ class Transaction
 
     /**
      * @var double
-     * @Column(type="decimal")
+     * @Column(type="decimal", precision=8, scale=3)
      */
     protected $amount;
 

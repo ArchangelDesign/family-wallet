@@ -3,14 +3,15 @@
 namespace App\Entities;
 /**
  * Class Account
- * @package App\Entities
+ *
+ * @package                App\Entities
  * @Entity
  * @Table(name="accounts")
  */
 class Account
 {
     /**
-     * @var int
+     * @var                    int
      * @Column(type="integer")
      * @Id
      * @GeneratedValue
@@ -18,7 +19,7 @@ class Account
     protected $id;
 
     /**
-     * @var string
+     * @var                   string
      * @Column(type="string")
      */
     protected $name;
@@ -32,7 +33,7 @@ class Account
     }
 
     /**
-     * @param int $id
+     * @param  int $id
      * @return Account
      */
     public function setId(?int $id): Account
@@ -50,7 +51,7 @@ class Account
     }
 
     /**
-     * @param string $name
+     * @param  string $name
      * @return Account
      */
     public function setName(string $name): Account

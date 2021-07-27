@@ -9,14 +9,15 @@ use App\Exceptions\FileParsingError;
 
 /**
  * Class QfxTransactionFileParser
+ *
  * @package App\Services
- * @see https://www.ofx.net/downloads/OFX%202.2.pdf
+ * @see     https://www.ofx.net/downloads/OFX%202.2.pdf
  *
  * based on my example file from the bank (my actual transaction history)
  * the file is not in correct XML format as documentation shows,
  * for some reason the file is partially a text file.
  * Regular expressions are used here instead of tokenizer.
- * @TODO: probably rename this one and create an actual parser that will also fix the file
+ * @TODO:   probably rename this one and create an actual parser that will also fix the file
  */
 class QfxTransactionFileParser implements TransactionFileParserInterface
 {
@@ -39,15 +40,16 @@ class QfxTransactionFileParser implements TransactionFileParserInterface
     private $ledgerBalance;
 
     /**
-     * @param string $filePath
+     * @param  string $filePath
      * @throws FileNotFound
      * @throws FileParsingError
      */
     public function loadFile(string $filePath)
     {
         $this->filePath = $filePath;
-        if (!file_exists($filePath))
+        if (!file_exists($filePath)) {
             throw new FileNotFound($filePath);
+        }
         // @TODO: support large file
         $this->contents = file_get_contents($filePath);
         $this->contents = str_replace("\r\n", "\n", $this->contents);
@@ -55,7 +57,7 @@ class QfxTransactionFileParser implements TransactionFileParserInterface
     }
 
     /**
-     * @param string $buffer
+     * @param  string $buffer
      * @throws FileParsingError
      */
     public function loadFromBuffer(string $buffer)
@@ -130,7 +132,7 @@ class QfxTransactionFileParser implements TransactionFileParserInterface
      * Returns an array of transaction block strings
      * for further parsing into Transaction entity
      *
-     * @param string $transactionOuterBlock
+     * @param  string $transactionOuterBlock
      * @return array
      */
     private function parseTransactionBlocks(string $transactionOuterBlock): array
@@ -142,7 +144,7 @@ class QfxTransactionFileParser implements TransactionFileParserInterface
     }
 
     /**
-     * @param string $block
+     * @param  string $block
      * @return Transaction
      * @throws FileParsingError
      */
@@ -160,10 +162,10 @@ class QfxTransactionFileParser implements TransactionFileParserInterface
     }
 
     /**
-     * @param string $block
+     * @param  string $block
      * @return string
      * @throws FileParsingError
-     * @TODO: DRY
+     * @TODO:  DRY
      */
     private function parseTransactionType(string $block): string
     {
@@ -176,10 +178,10 @@ class QfxTransactionFileParser implements TransactionFileParserInterface
     }
 
     /**
-     * @param string $block
+     * @param  string $block
      * @return string
      * @throws FileParsingError
-     * @TODO: DRY
+     * @TODO:  DRY
      */
     private function parseTransactionName(string $block): string
     {
@@ -192,10 +194,10 @@ class QfxTransactionFileParser implements TransactionFileParserInterface
     }
 
     /**
-     * @param string $block
+     * @param  string $block
      * @return float
      * @throws FileParsingError
-     * @TODO: DRY
+     * @TODO:  DRY
      */
     private function parseTransactionAmount(string $block): float
     {
@@ -208,10 +210,10 @@ class QfxTransactionFileParser implements TransactionFileParserInterface
     }
 
     /**
-     * @param string $block
+     * @param  string $block
      * @return string
      * @throws FileParsingError
-     * @TODO: DRY
+     * @TODO:  DRY
      */
     private function parseTransactionId(string $block): string
     {

@@ -18,6 +18,7 @@ use Illuminate\Database\MultipleRecordsFoundException;
 
 /**
  * Class TransactionService
+ *
  * @package App\Services
  */
 class TransactionService
@@ -39,7 +40,7 @@ class TransactionService
     }
 
     /**
-     * @param string $format
+     * @param  string $format
      * @return TransactionFileParserInterface
      * @throws UnhandledTransactionFileFormat
      */
@@ -47,16 +48,17 @@ class TransactionService
     {
         switch ($format)
         {
-            case 'qfx': return new QfxTransactionFileParser();
-            default:
-                throw new UnhandledTransactionFileFormat($format);
+        case 'qfx': 
+            return new QfxTransactionFileParser();
+        default:
+            throw new UnhandledTransactionFileFormat($format);
         }
     }
 
     /**
-     * @param Account $account
-     * @param Transaction $transaction
-     * @param bool $flush
+     * @param  Account     $account
+     * @param  Transaction $transaction
+     * @param  bool        $flush
      * @throws AccountNotFound
      * @throws TransactionDuplicated
      */
@@ -71,21 +73,23 @@ class TransactionService
         try {
             $this->fetchTransactionByValues($transaction);
             throw new TransactionDuplicated($transaction->getTransactionId());
-        } catch (TransactionNotFound | TransactionDuplicateFound $e) {}
+        } catch (TransactionNotFound | TransactionDuplicateFound $e) {
+        }
         $transaction->setAccount($account);
         $this->db->persist($transaction, $flush);
     }
 
     public function fetchAccountByIdOrName($accountIdOrName): Account
     {
-        if (is_numeric($accountIdOrName))
+        if (is_numeric($accountIdOrName)) {
             return $this->fetchAccountById($accountIdOrName);
+        }
 
         return $this->fetchAccountByName($accountIdOrName);
     }
 
     /**
-     * @param int $accountId
+     * @param  int $accountId
      * @return Account
      * @throws AccountNotFound
      * @throws TransactionServicePanic
@@ -108,7 +112,7 @@ class TransactionService
     }
 
     /**
-     * @param string $accountName
+     * @param  string $accountName
      * @return Account
      * @throws AccountNotFound
      * @throws MultipleAccountsMatched
@@ -136,7 +140,7 @@ class TransactionService
     }
 
     /**
-     * @param Transaction $transaction
+     * @param  Transaction $transaction
      * @return Transaction
      * @throws TransactionNotFound
      * @throws TransactionDuplicateFound
@@ -168,9 +172,10 @@ class TransactionService
 
     /**
      * For unit testing purposes only
+     *
      * @internal
-     * @param Transaction $transaction
-     * @throws \Doctrine\ORM\ORMException
+     * @param    Transaction $transaction
+     * @throws   \Doctrine\ORM\ORMException
      */
     public function deleteTransaction(Transaction $transaction)
     {
@@ -179,8 +184,8 @@ class TransactionService
     }
 
     /**
-     * @param string $name
-     * @param int|null $id
+     * @param  string   $name
+     * @param  int|null $id
      * @return Account
      * @throws AccountAlreadyExists
      * @throws TransactionServicePanic
@@ -209,14 +214,15 @@ class TransactionService
     }
 
     /**
-     * @param Account $acc
-     * @throws AccountNotFound
+     * @param    Account $acc
+     * @throws   AccountNotFound
      * @internal
      */
     public function deleteAccount(Account $acc)
     {
-        if (!$this->db->contains($acc))
+        if (!$this->db->contains($acc)) {
             throw new AccountNotFound('Entity is not synchronized.');
+        }
 
         $this->db->remove($acc);
         $this->db->flush();

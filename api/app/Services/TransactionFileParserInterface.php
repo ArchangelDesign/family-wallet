@@ -7,6 +7,7 @@ use App\Exceptions\FileNotFound;
 
 /**
  * Interface TransactionFileParserInterface
+ *
  * @package App\Services
  */
 interface TransactionFileParserInterface
@@ -22,7 +23,7 @@ interface TransactionFileParserInterface
     public function getLedgerBalance(): LedgerBalance;
 
     /**
-     * @param string $filePath
+     * @param  string $filePath
      * @return void
      * @throws FileNotFound
      */

@@ -4,14 +4,15 @@
 namespace App\Entities;
 /**
  * Class LedgerBalance
- * @package App\Entities
+ *
+ * @package                      App\Entities
  * @Entity
  * @Table(name="ledger_balance")
  */
 class LedgerBalance
 {
     /**
-     * @var int
+     * @var                    int
      * @Column(type="integer")
      * @Id
      * @GeneratedValue
@@ -19,21 +20,21 @@ class LedgerBalance
     protected $id;
 
     /**
-     * @var \DateTime
+     * @var                     \DateTime
      * @Column(type="datetime")
      */
     protected $dateOf;
 
     /**
-     * @var double
+     * @var                    double
      * @Column(type="decimal")
      */
     protected $balance;
 
     /**
-     * @var Account
+     * @var                                            Account
      * @ManyToOne(targetEntity="App\Entities\Account")
-     * @JoinColumn(name="account_id", referencedColumnName="id")
+     * @JoinColumn(name="account_id",                  referencedColumnName="id")
      */
     protected $account;
 
@@ -46,7 +47,7 @@ class LedgerBalance
     }
 
     /**
-     * @param int $id
+     * @param  int $id
      * @return LedgerBalance
      */
     public function setId(int $id): LedgerBalance
@@ -64,7 +65,7 @@ class LedgerBalance
     }
 
     /**
-     * @param \DateTime $dateOf
+     * @param  \DateTime $dateOf
      * @return LedgerBalance
      */
     public function setDateOf(\DateTime $dateOf): LedgerBalance
@@ -82,7 +83,7 @@ class LedgerBalance
     }
 
     /**
-     * @param float $balance
+     * @param  float $balance
      * @return LedgerBalance
      */
     public function setBalance(float $balance): LedgerBalance
@@ -100,7 +101,7 @@ class LedgerBalance
     }
 
     /**
-     * @param Account $account
+     * @param  Account $account
      * @return LedgerBalance
      */
     public function setAccount(Account $account): LedgerBalance

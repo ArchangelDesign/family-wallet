@@ -3,14 +3,15 @@
 namespace App\Entities;
 /**
  * Class Transaction
- * @package App\Entities
+ *
+ * @package                    App\Entities
  * @Entity
  * @Table(name="transactions")
  */
 class Transaction
 {
     /**
-     * @var int
+     * @var                    int
      * @Column(type="integer")
      * @Id
      * @GeneratedValue
@@ -18,57 +19,57 @@ class Transaction
     protected $id;
 
     /**
-     * @var string
+     * @var                   string
      * @Column(type="string", length=12)
      */
     protected $type;
 
     /**
-     * @var \DateTime
+     * @var                     \DateTime
      * @Column(type="datetime")
      */
     protected $datePosted;
 
     /**
-     * @var float
+     * @var                    float
      * @Column(type="decimal", precision=8, scale=3)
      */
     protected $amount;
 
     /**
-     * @var integer
+     * @var                    integer
      * @Column(type="integer")
      */
     protected $referenceNumber = 0;
 
     /**
-     * @var string
+     * @var                   string
      * @Column(type="string", length=200)
      */
     protected $name;
 
     /**
-     * @var string|null
+     * @var                   string|null
      * @Column(type="string", length=200, nullable=true)
      */
     protected $memo;
 
     /**
-     * @var double
+     * @var                    double
      * @Column(type="decimal", nullable=true)
      */
     protected $balance;
 
     /**
-     * @var string
+     * @var                   string
      * @Column(type="string", length=120)
      */
     protected $transactionId;
 
     /**
-     * @var Account
+     * @var                                            Account
      * @ManyToOne(targetEntity="App\Entities\Account")
-     * @JoinColumn(name="account_id", referencedColumnName="id")
+     * @JoinColumn(name="account_id",                  referencedColumnName="id")
      */
     protected $account;
 
@@ -81,7 +82,7 @@ class Transaction
     }
 
     /**
-     * @param int $id
+     * @param  int $id
      * @return Transaction
      */
     public function setId(int $id): Transaction
@@ -99,7 +100,7 @@ class Transaction
     }
 
     /**
-     * @param string $type
+     * @param  string $type
      * @return Transaction
      */
     public function setType(string $type): Transaction
@@ -117,7 +118,7 @@ class Transaction
     }
 
     /**
-     * @param \DateTime $datePosted
+     * @param  \DateTime $datePosted
      * @return Transaction
      */
     public function setDatePosted(\DateTime $datePosted): Transaction
@@ -135,7 +136,7 @@ class Transaction
     }
 
     /**
-     * @param float $amount
+     * @param  float $amount
      * @return Transaction
      */
     public function setAmount(float $amount): Transaction
@@ -153,7 +154,7 @@ class Transaction
     }
 
     /**
-     * @param int $referenceNumber
+     * @param  int $referenceNumber
      * @return Transaction
      */
     public function setReferenceNumber(int $referenceNumber): Transaction
@@ -171,7 +172,7 @@ class Transaction
     }
 
     /**
-     * @param string $name
+     * @param  string $name
      * @return Transaction
      */
     public function setName(string $name): Transaction
@@ -189,7 +190,7 @@ class Transaction
     }
 
     /**
-     * @param string $memo
+     * @param  string $memo
      * @return Transaction
      */
     public function setMemo(?string $memo): Transaction
@@ -207,7 +208,7 @@ class Transaction
     }
 
     /**
-     * @param float $balance
+     * @param  float $balance
      * @return Transaction
      */
     public function setBalance(?float $balance): Transaction
@@ -225,7 +226,7 @@ class Transaction
     }
 
     /**
-     * @param Account $account
+     * @param  Account $account
      * @return Transaction
      */
     public function setAccount(Account $account): Transaction
@@ -243,7 +244,7 @@ class Transaction
     }
 
     /**
-     * @param string $transactionId
+     * @param  string $transactionId
      * @return Transaction
      */
     public function setTransactionId(string $transactionId): Transaction

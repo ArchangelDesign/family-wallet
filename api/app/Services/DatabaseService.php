@@ -7,6 +7,7 @@ use Doctrine\ORM\Tools\Setup;
 
 /**
  * Class DatabaseService
+ *
  * @package App\Services
  */
 class DatabaseService
@@ -26,8 +27,7 @@ class DatabaseService
         int $port,
         string $database,
         string $connection = 'pdo_mysql'
-    )
-    {
+    ) {
         $paths = [dirname(__FILE__, 2) . '/' . self::ENTITY_DIRECTORY];
         $params = [
             'driver' => $connection,
@@ -37,8 +37,9 @@ class DatabaseService
             'port' => $port,
             'dbname' => $database
         ];
-        if ($connection == 'pdo_sqlite')
+        if ($connection == 'pdo_sqlite') {
             $params['path'] = $database;
+        }
         $this->params = $params;
         $config = Setup::createAnnotationMetadataConfiguration($paths, $this->isDevMode());
         $this->entityManager = EntityManager::create($params, $config);

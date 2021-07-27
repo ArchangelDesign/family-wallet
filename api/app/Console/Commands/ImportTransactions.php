@@ -1,5 +1,17 @@
 <?php
 
+/**
+ * Import transactions from a given file(s)
+ * php version 7.4
+ *
+ * @category Command
+ * @package  App\Console\Commands
+ * @author   Raff <email@domain.com>
+ * @license  MIT <https://opensource.org/licenses/MIT>
+ * @version  GIT: @1.0.0@
+ * @link     https://github.com/ArchangelDesign/family-wallet
+ */
+
 namespace App\Console\Commands;
 
 use App\Entities\Transaction;
@@ -10,6 +22,15 @@ use App\Exceptions\UnhandledTransactionFileFormat;
 use App\Services\TransactionService;
 use Illuminate\Console\Command;
 
+/**
+ * Class ImportTransactions
+ *
+ * @category Command
+ * @package  App\Console\Commands
+ * @author   Raff <email@domain.com>
+ * @license  MIT <https://opensource.org/licenses/MIT>
+ * @link     https://github.com/ArchangelDesign/family-wallet
+ */
 class ImportTransactions extends Command
 {
     /**
@@ -39,14 +60,18 @@ class ImportTransactions extends Command
     /**
      * Execute the console command.
      *
-     * @param TransactionService $transactionService
+     * @param TransactionService $transactionService transaction service
+     *
      * @return int
-     * @throws \App\Exceptions\FileNotFound
      */
     public function handle(TransactionService $transactionService)
     {
         $formats = $transactionService->getSupportedFormats();
-        $selectedFormat = $this->output->choice('Which format do you want to use?', $formats, 'csv');
+        $selectedFormat = $this->output->choice(
+            'Which format do you want to use?',
+            $formats,
+            'csv'
+        );
         try {
             $parser = $transactionService->getParser($selectedFormat);
         } catch (UnhandledTransactionFileFormat $e) {
@@ -65,15 +90,26 @@ class ImportTransactions extends Command
         $transactions = $parser->getTransactions();
         $ledgerBalance = $parser->getLedgerBalance();
         $this->info('number of transactions: ' . count($transactions));
-        $this->info('ledger balance: ' . $ledgerBalance->getBalance() . ' as of ' . $ledgerBalance->getDateOf()->format('Y-m-d H:i:s'));
-        $this->output->table(['type', 'amount'], $this->transactionTable($transactions));
+        $this->info(
+            'ledger balance: ' . $ledgerBalance->getBalance()
+            . ' as of ' . $ledgerBalance->getDateOf()->format('Y-m-d H:i:s')
+        );
+        $this->output->table(
+            ['type', 'amount'],
+            $this->_transactionTable($transactions)
+        );
 
-        if (!$this->output->confirm('Import transactions?'))
+        if (!$this->output->confirm('Import transactions?')) {
             return 0;
+        }
         $imported = 0;
         foreach ($transactions as $transaction) {
             try {
-                $transactionService->registerTransaction($account, $transaction, true);
+                $transactionService->registerTransaction(
+                    $account,
+                    $transaction,
+                    true
+                );
                 $imported++;
             } catch (AccountNotFound $e) {
                 $this->error('Invalid account.');
@@ -89,10 +125,16 @@ class ImportTransactions extends Command
         return 0;
     }
 
-    private function transactionTable(array $transactions): array
+    /**
+     * Creates a table to be displayed in the console
+     *
+     * @param array $transactions array of transactions
+     *
+     * @return array
+     */
+    private function _transactionTable(array $transactions): array
     {
         $result = [];
-        /** @var Transaction $t */
         foreach ($transactions as $t) {
             $result[] = [
                 'type' => $t->getType(),

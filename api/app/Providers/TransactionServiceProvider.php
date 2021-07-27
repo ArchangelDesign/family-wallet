@@ -15,9 +15,11 @@ class TransactionServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('App\Services\TransactionService', function ($app) {
-            return new TransactionService($this->app->make(DatabaseService::class));
-        });
+        $this->app->singleton(
+            'App\Services\TransactionService', function ($app) {
+                return new TransactionService($this->app->make(DatabaseService::class));
+            }
+        );
     }
 
     /**

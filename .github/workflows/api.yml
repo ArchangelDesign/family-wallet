@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 jobs:
-  laravel-tests:
+  unit-tests:
 
     runs-on: ubuntu-latest
 
@@ -48,4 +48,5 @@ jobs:
       - uses: actions/checkout@v2
       - name: PHPCS check
         working-directory: ./api
-        uses: chekalsky/phpcs-action@v1
+        run: |
+          ./vendor/bin/phpcbf app/Console/Commands/ImportTransactions.php

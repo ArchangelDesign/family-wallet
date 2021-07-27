@@ -50,3 +50,4 @@ jobs:
         working-directory: ./api
         run: |
           ./vendor/bin/phpcbf app/Console/Commands/ImportTransactions.php
+          ./vendor/bin/phpcbf app/Services/DatabaseService.php

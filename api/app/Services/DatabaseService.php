@@ -1,5 +1,17 @@
 <?php
 
+/**
+ * Wrapper around the Unit Of Work
+ * php version 7.4
+ *
+ * @category Command
+ * @package  App\Services
+ * @author   Raff <email@domain.com>
+ * @license  MIT <https://opensource.org/licenses/MIT>
+ * @version  GIT: @1.0.0@
+ * @link     https://github.com/ArchangelDesign/family-wallet
+ */
+
 namespace App\Services;
 
 use Doctrine\ORM\EntityManager;
@@ -8,18 +20,34 @@ use Doctrine\ORM\Tools\Setup;
 /**
  * Class DatabaseService
  *
- * @package App\Services
+ * @category Command
+ * @package  App\Services
+ * @author   Raff <email@domain.com>
+ * @license  MIT <https://opensource.org/licenses/MIT>
+ * @link     https://github.com/ArchangelDesign/family-wallet
  */
 class DatabaseService
 {
     const ENTITY_DIRECTORY = 'Entities';
     /**
+     * Doctrine EM
+     *
      * @var EntityManager
      */
-    private $entityManager;
+    private $_entityManager;
 
-    private $params;
-
+    /**
+     * DatabaseService constructor.
+     *
+     * @param string $host       db host
+     * @param string $username   username
+     * @param string $password   password
+     * @param int    $port       db port
+     * @param string $database   database name or file path
+     * @param string $connection db engine to use
+     *
+     * @throws \Doctrine\ORM\ORMException
+     */
     public function __construct(
         string $host,
         string $username,
@@ -40,49 +68,87 @@ class DatabaseService
         if ($connection == 'pdo_sqlite') {
             $params['path'] = $database;
         }
-        $this->params = $params;
-        $config = Setup::createAnnotationMetadataConfiguration($paths, $this->isDevMode());
-        $this->entityManager = EntityManager::create($params, $config);
+        $config = Setup::createAnnotationMetadataConfiguration(
+            $paths,
+            $this->_isDevMode()
+        );
+        $this->_entityManager = EntityManager::create($params, $config);
     }
 
-    private function isDevMode(): bool
+    /**
+     * Returns true if we're not in production
+     *
+     * @return bool
+     */
+    private function _isDevMode(): bool
     {
         return env('APP_ENV') != 'prod';
     }
 
+    /**
+     * Returns EntityManager
+     *
+     * @return EntityManager
+     */
     public function getEntityManager(): EntityManager
     {
-        return $this->entityManager;
+        return $this->_entityManager;
     }
 
-    public function flush()
+    /**
+     * Commits current transaction(s)
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @return void
+     */
+    public function flush(): void
     {
-        $this->entityManager->flush();
+        $this->_entityManager->flush();
     }
 
-    public function persist($entity, bool $flush)
+    /**
+     * Stores new entity
+     *
+     * @param mixed $entity given entity
+     * @param bool  $flush  commit transaction right away
+     *
+     * @return void
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function persist($entity, bool $flush): void
     {
-        $this->entityManager->persist($entity);
+        $this->_entityManager->persist($entity);
         if ($flush) {
             $this->flush();
         }
     }
 
+    /**
+     * Returns true if entity is synchronized
+     *
+     * @param mixed $entity the entity
+     *
+     * @return bool
+     */
     public function contains($entity)
     {
-        return $this->entityManager->contains($entity);
+        return $this->_entityManager->contains($entity);
     }
 
     /**
-     * @internal
+     * Removes synchronized entity
+     *
+     * @param mixed $entity the entity
+     *
+     * @return void
+     *
+     * @throws \Doctrine\ORM\ORMException
      */
-    public function dumpParams()
+    public function remove($entity): void
     {
-        var_dump($this->params);
-    }
-
-    public function remove($entity)
-    {
-        $this->entityManager->remove($entity);
+        $this->_entityManager->remove($entity);
     }
 }

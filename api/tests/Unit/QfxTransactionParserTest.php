@@ -9,6 +9,12 @@ use Tests\TestCase;
 
 class QfxTransactionParserTest extends TestCase
 {
+    private function getQfxFileContent()
+    {
+        $raw = file_get_contents('unit-test.qfx');
+        return gzinflate($raw);
+    }
+
     public function testParsingSingleTransactionAndLedgerBalance()
     {
         /** @var TransactionService $ts */
@@ -16,7 +22,7 @@ class QfxTransactionParserTest extends TestCase
 
         $parser = $ts->getParser('qfx');
         $this->assertInstanceOf(QfxTransactionFileParser::class, $parser);
-        $parser->loadFile('transaction_history.qbo');
+        $parser->loadFromBuffer($this->getQfxFileContent());
         $this->assertEquals(1, count($parser->getTransactions()));
         $transaction = $parser->getTransactions()[0];
         $this->assertInstanceOf(Transaction::class, $transaction);

@@ -48,10 +48,29 @@ class QfxTransactionFileParser implements TransactionFileParserInterface
         $this->filePath = $filePath;
         if (!file_exists($filePath))
             throw new FileNotFound($filePath);
-        $this->transactions = [];
         // @TODO: support large file
         $this->contents = file_get_contents($filePath);
         $this->contents = str_replace("\r\n", "\n", $this->contents);
+        $this->parseFile();
+    }
+
+    /**
+     * @param string $buffer
+     * @throws FileParsingError
+     */
+    public function loadFromBuffer(string $buffer)
+    {
+        $this->contents = $buffer;
+        $this->contents = str_replace("\r\n", "\n", $this->contents);
+        $this->parseFile();
+    }
+
+    /**
+     * @throws FileParsingError
+     */
+    private function parseFile()
+    {
+        $this->transactions = [];
         $transactionOuterBlock = $this->parseTransactionOuterBlock();
         $transactionBlocks = $this->parseTransactionBlocks($transactionOuterBlock);
         foreach ($transactionBlocks as $block) {
@@ -164,7 +183,7 @@ class QfxTransactionFileParser implements TransactionFileParserInterface
      */
     private function parseTransactionName(string $block): string
     {
-        $pattern = '/<NAME>[\s\b\w]*/';
+        $pattern = '/<NAME>[\s\b\w\$#\.\-]*/';
         $matches = [];
         if (!preg_match($pattern, $block, $matches)) {
             throw new FileParsingError('cannot parse transaction name');

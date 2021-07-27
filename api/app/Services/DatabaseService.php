@@ -37,6 +37,8 @@ class DatabaseService
             'port' => $port,
             'dbname' => $database
         ];
+        if ($connection == 'pdo_sqlite')
+            $params['path'] = $database;
         $this->params = $params;
         $config = Setup::createAnnotationMetadataConfiguration($paths, $this->isDevMode());
         $this->entityManager = EntityManager::create($params, $config);

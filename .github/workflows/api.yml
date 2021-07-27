@@ -46,9 +46,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Install Dependencies
+        working-directory: ./api
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
       - name: PHPCS check
         working-directory: ./api
         run: |
+          composer
           ./vendor/bin/phpcbf app/Console/Commands/ImportTransactions.php
           ./vendor/bin/phpcbf app/Services/DatabaseService.php
           ./vendor/bin/phpcbf app/Services/TransactionFileParserInterface.php

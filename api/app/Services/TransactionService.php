@@ -162,7 +162,7 @@ class TransactionService
      * @internal
      */
     public function registerAccount(string $name, int $id = null)
-    {$this->db->dumpParams();
+    {
         $acc = new Account();
         $acc->setId($id)
             ->setName($name);

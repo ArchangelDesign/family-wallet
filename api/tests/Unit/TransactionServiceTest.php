@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use App\Entities\Transaction;
 use App\Exceptions\TransactionDuplicated;
 use App\Services\TransactionService;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 /**
@@ -17,7 +18,7 @@ class TransactionServiceTest extends TestCase
     {
         /** @var TransactionService $xService */
         $xService = $this->app->make(TransactionService::class);
-
+var_dump(DB::select('show tables'));
         $xService->registerAccount('unit test', 1);
         $account = $xService->fetchAccountByIdOrName(1);
         $transaction = new Transaction();

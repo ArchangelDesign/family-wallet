@@ -1,0 +1,1 @@
+[![API](https://github.com/ArchangelDesign/family-wallet/actions/workflows/api.yml/badge.svg)](https://github.com/ArchangelDesign/family-wallet/actions/workflows/api.yml)

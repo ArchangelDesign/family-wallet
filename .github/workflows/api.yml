@@ -47,4 +47,5 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: PHPCS check
+        working-directory: ./api
         uses: chekalsky/phpcs-action@v1

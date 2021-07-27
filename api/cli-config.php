@@ -11,5 +11,5 @@ $app = require __DIR__ . DIRECTORY_SEPARATOR . 'bootstrap' . DIRECTORY_SEPARATOR
 $app->make(Kernel::class)->bootstrap();
 /** @var DatabaseService $dbService */
 $dbService = $app->make(DatabaseService::class);
-$dbService->dumpParams();
+
 return ConsoleRunner::createHelperSet($dbService->getEntityManager());

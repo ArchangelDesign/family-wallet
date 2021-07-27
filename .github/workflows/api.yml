@@ -41,7 +41,7 @@ jobs:
         run: |
           sh deploy-db-force.sh
           vendor/bin/phpunit
-  phpcs:
+  phpcs
     name: PHPCS
     runs-on: ubuntu-latest
     steps:
@@ -53,6 +53,4 @@ jobs:
         working-directory: ./api
         run: |
           ./vendor/bin/phpcbf app/Console/Commands/ImportTransactions.php
-          ./vendor/bin/phpcbf app/Services/DatabaseService.php
-          ./vendor/bin/phpcbf app/Services/TransactionFileParserInterface.php
-          ./vendor/bin/phpcbf app/Services/QfxTransactionFileParser.php
+          ./vendor/bin/phpcbf app/Services

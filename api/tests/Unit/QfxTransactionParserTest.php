@@ -35,19 +35,6 @@ class QfxTransactionParserTest extends TestCase
         $this->assertEquals('2021-07-22 16:00:00', $transaction->getDatePosted()->format('Y-m-d H:i:s'));
     }
 
-    public function testParsingMultipleTransactions()
-    {
-        /** @var TransactionService $ts */
-        $ts = $this->app->make(TransactionService::class);
-
-        $parser = $ts->getParser('qfx');
-        $this->assertInstanceOf(QfxTransactionFileParser::class, $parser);
-        $parser->loadFile('C:\Users\archa\Downloads\test.qfx');
-        $this->assertEquals(107, count($parser->getTransactions()));
-        $transaction = $parser->getTransactions()[0];
-        $this->assertInstanceOf(Transaction::class, $transaction);
-    }
-
     public function testDateTimeConversion()
     {
         $qfxDate = '20210723235959.000[0:GMT]';

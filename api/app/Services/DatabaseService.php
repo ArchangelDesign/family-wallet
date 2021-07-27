@@ -17,6 +17,8 @@ class DatabaseService
      */
     private $entityManager;
 
+    private $params;
+
     public function __construct(
         string $host,
         string $username,
@@ -35,6 +37,7 @@ class DatabaseService
             'port' => $port,
             'dbname' => $database
         ];
+        $this->params = $params;
         $config = Setup::createAnnotationMetadataConfiguration($paths, $this->isDevMode());
         $this->entityManager = EntityManager::create($params, $config);
     }
@@ -65,5 +68,13 @@ class DatabaseService
     public function contains($entity)
     {
         return $this->entityManager->contains($entity);
+    }
+
+    /**
+     * @internal
+     */
+    public function dumpParams()
+    {
+        var_dump($this->params);
     }
 }

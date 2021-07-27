@@ -14,13 +14,15 @@ use Tests\TestCase;
  */
 class TransactionServiceTest extends TestCase
 {
+    private function getService(): TransactionService
+    {
+        return $this->app->make(TransactionService::class);
+    }
+
     public function testDuplicatedTransactions()
     {
-        /** @var TransactionService $xService */
-        $xService = $this->app->make(TransactionService::class);
-
-        $xService->registerAccount('unit test', 1);
-        $account = $xService->fetchAccountByIdOrName(1);
+        $xService = $this->getService();
+        $account = $xService->registerAccount('unit test', 1);
         $transaction = new Transaction();
         $d = new \DateTime();
         $transaction->setDatePosted($d)
@@ -36,6 +38,21 @@ class TransactionServiceTest extends TestCase
             $this->assertTrue(true);
         } finally {
             $xService->deleteTransaction($transaction);
+            $xService->deleteAccount($account);
+        }
+    }
+
+    public function testRegisteringAccounts()
+    {
+        $service = $this->getService();
+        $accountName = 'unit-test-' . date('His');
+        try {
+           $acc = $service->registerAccount($accountName);
+           $this->assertIsNumeric($acc->getId());
+           $this->assertTrue($acc->getId() > 0);
+        } finally {
+            if (isset($acc))
+                $service->deleteAccount($acc);
         }
     }
 }

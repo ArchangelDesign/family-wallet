@@ -3,14 +3,18 @@
 namespace App\Services;
 use App\Entities\Account;
 use App\Entities\Transaction;
+use App\Exceptions\AccountAlreadyExists;
 use App\Exceptions\AccountNotFound;
+use App\Exceptions\MultipleAccountsMatched;
 use App\Exceptions\TransactionDuplicated;
 use App\Exceptions\TransactionDuplicateFound;
 use App\Exceptions\TransactionNotFound;
 use App\Exceptions\TransactionServicePanic;
 use App\Exceptions\UnhandledTransactionFileFormat;
+use Doctrine\DBAL\Exception\NonUniqueFieldNameException;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
+use Illuminate\Database\MultipleRecordsFoundException;
 
 /**
  * Class TransactionService
@@ -103,9 +107,27 @@ class TransactionService
         }
     }
 
-    private function fetchAccountByName($accountName): Account
+    /**
+     * @param string $accountName
+     * @return Account
+     * @throws AccountNotFound
+     * @throws MultipleAccountsMatched
+     */
+    private function fetchAccountByName(string $accountName): Account
     {
-        return new Account();
+        try {
+            return $this->db->getEntityManager()->createQueryBuilder()
+                ->select('a')
+                ->from('App\Entities\Account', 'a')
+                ->where('a.name = :name')
+                ->setParameter('name', $accountName)
+                ->getQuery()
+                ->getSingleResult();
+        } catch (NoResultException $e) {
+            throw new AccountNotFound($accountName);
+        } catch (NonUniqueFieldNameException $e) {
+            throw new MultipleAccountsMatched('More than one account matches ' . $accountName);
+        }
     }
 
     public function flush()
@@ -159,13 +181,44 @@ class TransactionService
     /**
      * @param string $name
      * @param int|null $id
-     * @internal
+     * @return Account
+     * @throws AccountAlreadyExists
+     * @throws TransactionServicePanic
      */
     public function registerAccount(string $name, int $id = null)
     {
+        try {
+            $this->fetchAccountByName($name);
+            throw new AccountAlreadyExists($name);
+        } catch (AccountNotFound $e) {
+        } catch (MultipleAccountsMatched $e) {
+        }
+        try {
+            if (!is_null($id)) {
+                $this->fetchAccountById($id);
+                throw new AccountAlreadyExists('id: ' . $id);
+            }
+        } catch (AccountNotFound $e) {
+        }
         $acc = new Account();
         $acc->setId($id)
             ->setName($name);
         $this->db->persist($acc, true);
+
+        return $acc;
+    }
+
+    /**
+     * @param Account $acc
+     * @throws AccountNotFound
+     * @internal
+     */
+    public function deleteAccount(Account $acc)
+    {
+        if (!$this->db->contains($acc))
+            throw new AccountNotFound('Entity is not synchronized.');
+
+        $this->db->remove($acc);
+        $this->db->flush();
     }
 }

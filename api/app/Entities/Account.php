@@ -24,9 +24,9 @@ class Account
     protected $name;
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -35,7 +35,7 @@ class Account
      * @param int $id
      * @return Account
      */
-    public function setId(int $id): Account
+    public function setId(?int $id): Account
     {
         $this->id = $id;
         return $this;

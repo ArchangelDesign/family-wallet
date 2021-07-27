@@ -79,4 +79,9 @@ class DatabaseService
     {
         var_dump($this->params);
     }
+
+    public function remove($entity)
+    {
+        $this->entityManager->remove($entity);
+    }
 }

@@ -14,6 +14,8 @@ class DatabaseServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        if (empty(env('DB_CONNECTION')))
+            throw new \RuntimeException('Environment is not configured.');
         $this->app->singleton('App\Services\DatabaseService', function ($app) {
             return new DatabaseService(
                 env('DB_HOST'),

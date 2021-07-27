@@ -18,7 +18,7 @@ class TransactionServiceTest extends TestCase
     {
         /** @var TransactionService $xService */
         $xService = $this->app->make(TransactionService::class);
-var_dump(DB::select('show tables'));
+var_dump(DB::select("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;"));
         $xService->registerAccount('unit test', 1);
         $account = $xService->fetchAccountByIdOrName(1);
         $transaction = new Transaction();

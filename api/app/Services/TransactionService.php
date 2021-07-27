@@ -155,4 +155,17 @@ class TransactionService
         $this->db->getEntityManager()->remove($transaction);
         $this->db->flush();
     }
+
+    /**
+     * @param string $name
+     * @param int|null $id
+     * @internal
+     */
+    public function registerAccount(string $name, int $id = null)
+    {
+        $acc = new Account();
+        $acc->setId($id)
+            ->setName($name);
+        $this->db->persist($acc, true);
+    }
 }

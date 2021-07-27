@@ -18,6 +18,7 @@ class TransactionServiceTest extends TestCase
         /** @var TransactionService $xService */
         $xService = $this->app->make(TransactionService::class);
 
+        $xService->registerAccount('unit test', 1);
         $account = $xService->fetchAccountByIdOrName(1);
         $transaction = new Transaction();
         $d = new \DateTime();

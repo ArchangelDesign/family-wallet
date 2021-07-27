@@ -20,7 +20,7 @@ use Doctrine\ORM\Tools\Setup;
 /**
  * Class DatabaseService
  *
- * @category Command
+ * @category Service
  * @package  App\Services
  * @author   Raff <email@domain.com>
  * @license  MIT <https://opensource.org/licenses/MIT>

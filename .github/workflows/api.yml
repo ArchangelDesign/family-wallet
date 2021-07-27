@@ -41,7 +41,7 @@ jobs:
         run: |
           sh deploy-db-force.sh
           vendor/bin/phpunit
-  phpcs
+  phpcs:
     name: PHPCS
     runs-on: ubuntu-latest
     steps:
